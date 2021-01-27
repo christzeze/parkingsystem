@@ -16,6 +16,28 @@ public class ParkingSpotDAO {
 
     public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
+    public boolean getAvailable(ParkingSpot parkingSpot){
+        Connection con = null;
+        boolean result=false;
+        try {
+            con = dataBaseConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(DBConstants.GET_IS_AVAILABLE);
+            ps.setInt(1, parkingSpot.getId());
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                result=rs.getBoolean(1);
+                //result = rs.getInt(1);;
+            }
+            dataBaseConfig.closeResultSet(rs);
+            dataBaseConfig.closePreparedStatement(ps);
+        }catch (Exception ex){
+            logger.error("Error fetching available",ex);
+        }finally {
+            dataBaseConfig.closeConnection(con);
+        }
+        return result;
+    }
+
     public int getNextAvailableSlot(ParkingType parkingType){
         Connection con = null;
         int result=-1;
