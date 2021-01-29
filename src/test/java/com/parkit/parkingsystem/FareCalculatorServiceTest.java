@@ -7,6 +7,7 @@ import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -122,6 +123,63 @@ public class FareCalculatorServiceTest {
         ticket.setParkingSpot(parkingSpot);
         fareCalculatorService.calculateFare(ticket);
         assertEquals( (24 * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
+    }
+
+    @Test
+    @DisplayName("should return 0 when duration of parking is <= 30")
+    public void calculateFareShouldReturn0WhenDurationLessThan30() {
+        Date inTime = new Date();
+        inTime.setTime( System.currentTimeMillis() - (  29 * 60 * 1000) );// 29 minutes before end
+        Date outTime = new Date();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        fareCalculatorService.calculateFare(ticket);
+        assertEquals( (0) , ticket.getPrice());
+    }
+
+    @Test
+    public void calculateFareShouldReturn5PercentDiscountOnTicketPriceIfRecurrentVehicle() {
+        Date inTime = new Date();
+        inTime.setTime( System.currentTimeMillis() - (  90 * 60 * 1000) );// 90 minutes before end
+        Date outTime = new Date();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        fareCalculatorService.calculateFare(ticket, true);
+        assertEquals( (90 * Fare.CAR_RATE_PER_MINUTE * 0.95) , ticket.getPrice());
+    }
+
+    @Test
+    public void calculateFareShouldReturnAnExceptionForOutTimeIsNull() {
+        Date inTime = new Date();
+        inTime.setTime( System.currentTimeMillis() - (  60 * 60 * 1000) );
+        Date outTime = null;
+        ParkingSpot parkingSpot = new ParkingSpot(1, null,false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        Throwable exception = assertThrows(NullPointerException.class, () -> fareCalculatorService.calculateFare(ticket));
+        assertEquals("Out time provided is null:", exception.getMessage());
+    }
+
+    @Test
+    public void calculateFareShouldReturnAnExceptionForOutTimelessInTime() {
+        Date inTime = new Date();
+        inTime.setTime( System.currentTimeMillis() + (  60 * 60 * 1000) );
+        Date outTime = new Date();
+        System.out.println(outTime);
+        ParkingSpot parkingSpot = new ParkingSpot(1, null,false);
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        Throwable exception = assertThrows(IllegalArgumentException.class, () -> fareCalculatorService.calculateFare(ticket));
+        assertEquals("Out time provided is incorrect:" + ticket.getOutTime().toString(), exception.getMessage());
     }
 
 }
