@@ -18,7 +18,7 @@ public class DataBaseTestConfig extends DataBaseConfig {
         return DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/prod?useUnicode=true" +
                         "&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&" +
-                        "serverTimezone=UTC","root","");
+                        "serverTimezone=UTC","root","rootroot");
     }
 
     public void closeConnection(Connection con){
