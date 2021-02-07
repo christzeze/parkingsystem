@@ -9,7 +9,7 @@ public class FareCalculatorService {
     public static final double DISCOUNT = 0.05;
 
     /**
-     * Compute ticket price for non recurrent vehicules
+     * Compute ticket price for non recurrent vehicles
      *
      * @param ticket
      */
@@ -18,7 +18,7 @@ public class FareCalculatorService {
     }
 
     /**
-     * Compute ticket price for recurrent and non recurrent vehicules
+     * Compute ticket price for recurrent and non recurrent vehicles
      *
      * @param ticket
      * @param isRecurrent
@@ -30,6 +30,13 @@ public class FareCalculatorService {
         if ((ticket.getOutTime().before(ticket.getInTime()))) {
             throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
         }
+
+        if ((ticket.getParkingSpot().getParkingType()==null)) {
+            throw new NullPointerException("Unkown Parking Type");
+        }
+
+        if (isRecurrent)
+            System.out.println("elcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
 
         Long arrivalDateTimestamp = ticket.getInTime().getTime();
         Long departureDateTimestamp = ticket.getOutTime().getTime();
@@ -48,7 +55,6 @@ public class FareCalculatorService {
                 break;
             }
             default:
-                throw new IllegalArgumentException("Unkown Parking Type");
         }
     }
 }
