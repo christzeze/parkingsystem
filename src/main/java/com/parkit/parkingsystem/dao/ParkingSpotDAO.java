@@ -16,17 +16,16 @@ public class ParkingSpotDAO {
 
     public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
-    public boolean getAvailable(ParkingSpot parkingSpot){
+    public int getAvailable(ParkingSpot parkingSpot){
         Connection con = null;
-        boolean result=false;
+        int result=0;
         try {
             con = dataBaseConfig.getConnection();
             PreparedStatement ps = con.prepareStatement(DBConstants.GET_IS_AVAILABLE);
             ps.setInt(1, parkingSpot.getId());
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
-                result=rs.getBoolean(1);
-                //result = rs.getInt(1);;
+                result=rs.getInt(1);
             }
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
@@ -60,7 +59,7 @@ public class ParkingSpotDAO {
     }
 
     public boolean updateParking(ParkingSpot parkingSpot){
-        //update the availability fo that parking slot
+        //update the availability for that parking slot
         Connection con = null;
         try {
             con = dataBaseConfig.getConnection();
@@ -69,10 +68,31 @@ public class ParkingSpotDAO {
             ps.setInt(2, parkingSpot.getId());
             int updateRowCount = ps.executeUpdate();
             dataBaseConfig.closePreparedStatement(ps);
-            return (updateRowCount == 1);
+                return (updateRowCount == 1);
         }catch (Exception ex){
             logger.error("Error updating parking info",ex);
             return false;
+        }finally {
+            dataBaseConfig.closeConnection(con);
+        }
+    }
+
+    public int ParkingFree(){
+        //search the first parking free
+        int result=-1;
+        Connection con = null;
+        try {
+            con = dataBaseConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(DBConstants.MIN_PARKINGSLOT);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                result = rs.getInt(1);;
+            }
+            dataBaseConfig.closePreparedStatement(ps);
+            return result;
+        }catch (Exception ex){
+            logger.error("Error searching parking free",ex);
+            return 0;
         }finally {
             dataBaseConfig.closeConnection(con);
         }
