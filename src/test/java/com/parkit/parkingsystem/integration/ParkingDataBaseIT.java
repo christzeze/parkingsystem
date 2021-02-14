@@ -63,61 +63,58 @@ public class ParkingDataBaseIT {
 
     @Test
     public void testParkingACar() throws Exception{
+        // GIVEN
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-        dataBasePrepareService.clearDataBaseEntries();
 
+        // WHEN
+        dataBasePrepareService.clearDataBaseEntries();
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
         String vehicleRegNumber="ABCDEF";
         Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
-        assertEquals(ticket.getVehicleRegNumber(), "ABCDEF");
         int isAvailable=parkingSpotDAO.getAvailable(ticket.getParkingSpot()); // return 0 if parking slot is busy
+
+        // THEN
+        assertEquals(ticket.getVehicleRegNumber(), "ABCDEF");
         assertEquals(isAvailable,0);
-        //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
+
     }
 
 
 
     @Test
     public void testParkingLotExit(){
+        // GIVEN
         FareCalculatorService fareCalculatorService;
-
         Ticket ticket=new Ticket();
         fareCalculatorService = new FareCalculatorService();
-
-        dataBasePrepareService.clearDataBaseEntries();
-
         Date inTime = new Date();
         inTime.setTime( System.currentTimeMillis() - (  60 * 60 * 1000) );
         Date outTime = new Date();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
-
         ticket.setParkingSpot(parkingSpot);
         ticket.setVehicleRegNumber("ABCDEF");
         ticket.setInTime(inTime);
         ticket.setOutTime(outTime);
         ticket.setParkingSpot(parkingSpot);
 
-        fareCalculatorService.calculateFare(ticket);
 
+         // WHEN
+        dataBasePrepareService.clearDataBaseEntries();
+        fareCalculatorService.calculateFare(ticket);
         ticketDAO.saveTicket(ticket);
 
-        assertEquals(ticketDAO.getTicket("ABCDEF").getPrice(), ticket.getPrice());
-
         Date outTimeInDB=new Date(ticketDAO.getTicket("ABCDEF").getOutTime().getTime());
-
         DateFormat shortDateFormat = DateFormat.getDateTimeInstance(
                 DateFormat.SHORT,
                 DateFormat.SHORT);
-
         String outTimeInDBFormatted=shortDateFormat.format(outTimeInDB);
         String outTimeTicketFormatted=shortDateFormat.format(outTime);
 
+        //THEN
+        assertEquals(ticketDAO.getTicket("ABCDEF").getPrice(), ticket.getPrice());
         assertEquals(outTimeInDBFormatted,outTimeTicketFormatted);
-
-
-        //TODO: check that the fare generated and out time are populated correctly in the database
     }
 
 
