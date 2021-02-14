@@ -17,24 +17,27 @@ public class ParkingSpot {
         return number;
     }
 
-    public void setId(int number) {
+    public ParkingSpot setId(int number) {
         this.number = number;
+        return this;
     }
 
     public ParkingType getParkingType() {
         return parkingType;
     }
 
-    public void setParkingType(ParkingType parkingType) {
+    public ParkingSpot setParkingType(ParkingType parkingType) {
         this.parkingType = parkingType;
+        return this;
     }
 
     public boolean isAvailable() {
         return isAvailable;
     }
 
-    public void setAvailable(boolean available) {
+    public ParkingSpot setAvailable(boolean available) {
         isAvailable = available;
+        return this;
     }
 
     @Override
