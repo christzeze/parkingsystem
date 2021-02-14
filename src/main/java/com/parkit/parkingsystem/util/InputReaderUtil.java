@@ -21,7 +21,7 @@ public class InputReaderUtil {
         }
     }
 
-    public String readVehicleRegistrationNumber() throws Exception {
+    public String readVehicleRegistrationNumber() {
         try {
             String vehicleRegNumber= scan.nextLine();
             if(vehicleRegNumber == null || vehicleRegNumber.trim().length()==0) {
@@ -31,7 +31,7 @@ public class InputReaderUtil {
         }catch(Exception e){
             logger.error("Error while reading user input from Shell", e);
             System.out.println("Error reading input. Please enter a valid string for vehicle registration number");
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 
