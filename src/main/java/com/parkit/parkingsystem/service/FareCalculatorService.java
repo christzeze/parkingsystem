@@ -36,7 +36,7 @@ public class FareCalculatorService {
         }
 
         if (isRecurrent)
-            System.out.println("elcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
+            System.out.println("Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
 
         Long arrivalDateTimestamp = ticket.getInTime().getTime();
         Long departureDateTimestamp = ticket.getOutTime().getTime();
