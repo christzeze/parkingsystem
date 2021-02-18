@@ -8,14 +8,14 @@ import java.sql.*;
 public class DataBaseConfig {
 
     private static final Logger logger = LogManager.getLogger("DataBaseConfig");
+    public static final String PASSWORD = "rootroot";
+    public static final String USER = "root";
+    public static final String DB_URL = "jdbc:mysql://localhost:3306/prod?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 
     public Connection getConnection() throws ClassNotFoundException, SQLException {
         logger.info("Create DB connection");
         Class.forName("com.mysql.cj.jdbc.Driver");
-        return DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/prod?useUnicode=true" +
-                        "&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&" +
-                        "serverTimezone=UTC","root","rootroot");
+        return DriverManager.getConnection(DB_URL, USER, PASSWORD);
     }
 
     public void closeConnection(Connection con){
