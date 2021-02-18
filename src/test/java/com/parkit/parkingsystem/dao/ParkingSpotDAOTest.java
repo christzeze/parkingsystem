@@ -3,13 +3,9 @@ package com.parkit.parkingsystem.dao;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
-import com.parkit.parkingsystem.service.ParkingService;
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 class ParkingSpotDAOTest {
 
@@ -27,7 +23,7 @@ class ParkingSpotDAOTest {
     void getNextAvailableSlot() {
         ParkingSpotDAO parkingSpotDAO=new ParkingSpotDAO();
         ParkingType parkingType=ParkingType.CAR;
-        int firstParkingFree=parkingSpotDAO.ParkingFree();
+        int firstParkingFree=parkingSpotDAO.parkingFree();
         assertEquals(parkingSpotDAO.getNextAvailableSlot(parkingType),firstParkingFree);
     }
 
