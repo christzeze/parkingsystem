@@ -77,7 +77,7 @@ public class ParkingSpotDAO {
         }
     }
 
-    public int ParkingFree(){
+    public int parkingFree(){
         //search the first parking free
         int result=-1;
         Connection con = null;
